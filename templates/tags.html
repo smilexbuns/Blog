@@ -1,0 +1,132 @@
+﻿{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}标签{% endblock %}
+{% block content %}
+ <!-- tags-content-page -->
+    <section class="blog-side blog-style-one shop-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-12 col-xs-12 content-side">
+                    <div class="blog-details-content shop-details-content">
+                        <div class="shop-area centred">
+                            <div class="row">
+                                {% for article in articles.object_list %}
+                                <div class="col-md-4 col-sm-6 col-xs-12 shop-column">
+                                    <div class="single-item">
+                                        <div class="single-item-overlay">
+                                            <div class="img-box">
+                                                <img src="{{ MEDIA_URL }}{{ article.firstPicture }}" style="height: 150px;" alt="">
+                                                <div class="overlay">
+                                                    <div class="inner-box">
+                                                        <div class="content">
+                                                            <a href="{% url 'article' article.id %}" class="btn-one"><i class="fa fa-link"></i>&nbsp;&nbsp;</a></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="lower-content">
+                                            <h5><a href="shop-single.html">{{ article.title }}</a></h5>
+                                            <li><a href="#"><i class="fa fa-calendar"></i>&nbsp;&nbsp;{{ article.createtime|date:"SHORT_DATE_FORMAT" }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;&nbsp;{{ article.views }}</a></li>
+                                            <li><a href="#"><i class="fa fa-user"></i>&nbsp;&nbsp;{{ article.user.nickname }}</a></li>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <ul class="page-pagination centred">
+                            {% if articles.has_previous %}
+                            <li><a href="?{{ articles.previous_page_number.querystring }}"><i class="fa fa-angle-left"></i>&nbsp;&nbsp;&nbsp;上一页</a></li>
+                            {% endif %}
+                            {% for page in articles.pages %}
+                                {% if page %}
+                                    {% ifequal page articles.number %}
+                                        <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                                    {% else %}
+                                        <li><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                                    {% endifequal %}
+                                {% else %}
+                                    <li class="none"><a href="">...</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if articles.has_next %}
+                            <li><a href="?{{ articles.next_page_number.querystring }}">下一页&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                            {% endif %}
+                        </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12 sidebar-side">
+                    <div class="sidebar-content">
+                        <div class="sidebar-categories">
+                            <div class="sidebar-title">标签</div>
+                            <ul class="categories-list">
+                                {% for tag in tags %}
+                                <li><a href="?tag={{ tag.id }}">{{ tag.name }}<span>({{ tag.article_set.count }})</span></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="sidebar-post">
+                            <div class="sidebar-title">最热文章</div>
+                            {% for hot_article in hot_articles %}
+                            <div class="single-post">
+                                <div class="img-box"><a href="{% url 'article' hot_article.id %}"><figure><img src="{{ MEDIA_URL }}{{ hot_article.firstPicture }}" style="height: 70px" alt=""></figure></a></div>
+                                <h6><a href="{% url 'article' hot_article.id %}">{{ hot_article.title }}</a></h6>
+                                <div class="text">{{ hot_article.createtime|date:"SHORT_DATE_FORMAT" }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block footer %}
+ <!-- main footer -->
+    <footer class="footer-style-one main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-xs-12 footer-column">
+                    <div class="logo-wideget footer-wideget">
+                        <div class="footer-logo">
+                            <a href="index.html"><figure><img src="{% static 'images/logo1.png' %}" alt=""></figure></a>
+                        </div>
+                        <div class="text">
+                            <p>人生には 三つの坂があるですって。上り坂，下り坂，まさか。</p>
+                        </div>
+                        <ul class="social-style-one">
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fa fa-wechat"></i></a></li>
+                            <li><a href="#"><i class="fa fa-weibo"></i></a></li>
+                            <li><a href="#"><i class="fa fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12 footer-column">
+                    <div class="footer-post-wideget footer-wideget">
+                        <div class="footer-title">最近更新</div>
+                        {% for new_article in new_articles %}
+                        <div class="single-post">
+                            <div class="img-box"><a href="{% url 'article' new_article.id %}"><figure><img src="{{ MEDIA_URL }}{{ new_article.firstPicture }}" style="height: 60px" alt=""></figure></a></div>
+                            <h6><a href="{% url 'article' new_article.id %}">{{ new_article.title }}</a></h6>
+                            <div class="text">{{ new_article.createtime|date:"SHORT_DATE_FORMAT" }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12 footer-column">
+                    <div class="footer-categories-wideget footer-wideget">
+                        <div class="footer-title">分类</div>
+                        <ul class="categories-list">
+                            {% for type in types %}
+                            <li><a href="{% url 'types' %}?type={{ type.id }}">{{ type.name }}<span>({{ type.article_set.count}})</span></a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- main footer end -->
+{% endblock %}

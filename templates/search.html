@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}搜索结果{% endblock %}
+{% block content %}
+    <!-- blog side -->
+    <section class="blog-side blog-style-one">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-12 col-xs-12 content-side">
+                    <div class="blog-details-content">
+                    {% if search_number != 0 %}
+                        <p>搜索结果: 共{{ search_number }}条</p>
+                        <div class="row">
+                            {% for article in search_list.object_list %}
+                            <div class="single-blog-content content-box overlay-item">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="inner-box img-box">
+                                            <div class="image-box">
+                                                <figure class="image"><img src="{{ MEDIA_URL }}{{ article.firstPicture }}" style="height: 200px" alt=""></figure>
+                                                <div class="overlay-box">
+                                                    <div class="overlay-inner">
+                                                        <div class="content">
+                                                            <a href="{% url 'article' article.id %}"><i class="fa fa-link"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                        <div class="blog-content-one blog-content-two">
+                                            <div class="top-content">
+                                                <div class="meta-text"><a href="#">{{ article.type.name }}</a></div>
+                                                <div class="title"><h4><a href="post1.html">{{ article.title }}</a></h4></div>
+                                                <div class="date"><span>On</span> {{ article.createtime }} &nbsp;&nbsp;<i class="flaticon-circle"></i>&nbsp;&nbsp;<span>By</span> {{ article.user.nickname }}</div>
+                                            </div>
+                                            <div class="text">
+                                                <p>{{ article.desc }}...</p>
+                                            </div>
+                                            <ul class="meta-list centred">
+                                                <li><a href="{% url 'article' article.id %}"><i class="fa fa-comments-o" aria-hidden="true"></i>&nbsp; {{ article.comment_set.count }}</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{ article.views }}</a></li>
+                                                <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <ul class="page-pagination centred">
+                            {% if search_list.has_previous %}
+                            <li><a href="?{{ search_list.previous_page_number.querystring }}"><i class="fa fa-angle-left"></i>&nbsp;&nbsp;&nbsp;上一页</a></li>
+                            {% endif %}
+                            {% for page in search_list.pages %}
+                                {% if page %}
+                                    {% ifequal page search_list.number %}
+                                        <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                                    {% else %}
+                                        <li><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                                    {% endifequal %}
+                                {% else %}
+                                    <li class="none"><a href="">...</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if search_list.has_next %}
+                            <li><a href="?{{ search_list.next_page_number.querystring }}">下一页&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    {% else %}
+                        <p>暂无数据</p>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12 sidebar-side">
+                    <div class="sidebar-content">
+                        <div class="sidebar-about centred">
+                            <div class="sidebar-title">关于我</div>
+                            <figure class="img-box"><a href="about.html"><img src="{% static 'images/default.jpg' %}" alt=""></a></figure>
+                            <div class="name"><a href="about.html">SmilexBuns</a></div>
+                            <div class="text"><p></p></div>
+                            <ul class="social-link">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="sidebar-post">
+                            <div class="sidebar-title">今天天气</div>
+                            <div class="single-post">
+                                <div class="img-box" style="border-radius: 35px;"><figure>
+                                    <img  src="{% if today.type == '晴' %}
+                                       {% static 'weather/d00.gif' %}
+                                       {% elif today.type == '多云' %}
+                                       {% static 'weather/d01.gif' %}
+                                       {% elif weather.type == '阴' %}
+                                       {% static 'weather/d02.gif' %}
+                                       {% elif weather.type == '阵雨' %}
+                                       {% static 'weather/d03.gif' %}
+                                       {% elif today.type == '雷阵雨' %}
+                                       {% static 'weather/d04.gif' %}
+                                       {% elif weather.type == '雷阵雨伴有冰雹' %}
+                                       {% static 'weather/d05.gif' %}
+                                       {% elif today.type == '雨夹雪' %}
+                                       {% static 'weather/d06.gif' %}
+                                       {% elif weather.type == '小雨' %}
+                                       {% static 'weather/d07.gif' %}
+                                       {% elif weather.type == '中雨' %}
+                                       {% static 'weather/d08.gif' %}
+                                       {% elif today.type == '大雨' %}
+                                       {% static 'weather/d09.gif' %}
+                                       {% elif weather.type == '暴雨' %}
+                                       {% static 'weather/d10.gif' %}
+                                       {% elif today.type == '大暴雨' %}
+                                       {% static 'weather/d11.gif' %}
+                                       {% elif weather.type == '特大暴雨' %}
+                                       {% static 'weather/d12.gif' %}
+                                       {% elif today.type == '阵雪' %}
+                                       {% static 'weather/d13.gif' %}
+                                       {% elif today.type == '小雪' %}
+                                       {% static 'weather/d14.gif' %}
+                                       {% elif today.type == '中雪' %}
+                                       {% static 'weather/d15.gif' %}
+                                       {% elif today.type == '大雪' %}
+                                       {% static 'weather/d16.gif' %}
+                                       {% elif today.type == '暴雪' %}
+                                       {% static 'weather/d17.gif' %}
+                                       {% elif today.type == '雾' %}
+                                       {% static 'weather/d18.gif' %}
+                                       {% elif today.type == '冻雨' %}
+                                       {% static 'weather/d19.gif' %}
+                                       {% elif today.type == '沙尘暴' %}
+                                       {% static 'weather/d20.gif' %}
+                                       {% elif today.type == '小雨转中雨' %}
+                                       {% static 'weather/d21.gif' %}
+                                       {% elif today.type == '中雨转大雨' %}
+                                       {% static 'weather/d22.gif' %}
+                                       {% elif today.type == '大雨转大暴雨' %}
+                                       {% static 'weather/d23.gif' %}
+                                       {% elif today.type == '暴雨转大暴雨' %}
+                                       {% static 'weather/d24.gif' %}
+                                       {% elif today.type == '大暴雨转特大暴雨' %}
+                                       {% static 'weather/d25.gif' %}
+                                       {% elif today.type == '小雪转中雪' %}
+                                       {% static 'weather/d26.gif' %}
+                                       {% elif today.type == '中雪转大雪' %}
+                                       {% static 'weather/d27.gif' %}
+                                       {% elif today.type == '大雪转暴雪' %}
+                                       {% static 'weather/d28.gif' %}
+                                       {% elif today.type == '浮尘' %}
+                                       {% static 'weather/d29.gif' %}
+                                       {% elif today.type == '扬沙' %}
+                                       {% static 'weather/d30.gif' %}
+                                       {% elif today.type == '强沙尘暴' %}
+                                       {% static 'weather/d31.gif' %}
+                                       {% elif today.type == '霾' %}
+                                       {% static 'weather/d32.gif' %}
+                                    {% endif %}" class="" style="height: 70px;" alt=""></figure></div>
+                                <h5>{{ today.type }}</h5>
+                                <h6>{{ today.high }} ~ {{ today.low }}</h6>
+                                <h6>{{ today.fengxiang }}</h6>
+                                <h6>{{ tip }}</h6>
+                            </div>
+                        </div>
+                        <div class="sidebar-categories">
+                            <div class="sidebar-title">分类</div>
+                            <ul class="categories-list">
+                                {% for type in types %}
+                                <li><a href="?type={{ type.id }}">{{ type.name }}<span>({{ type.article_set.count }})</span></a></li>
+                                {% endfor %}
+                                <li><a href="{% url 'types' %}">更多...</a></li>
+                            </ul>
+                        </div>
+                        <div class="sidebar-categories">
+                            <div class="sidebar-title">标签</div>
+                            <ul class="categories-list">
+                                {% for tag in tags %}
+                                <li><a href="?tag={{ tag.id }}">{{ tag.name }}<span>({{ tag.article_set.count }})</span></a></li>
+                                {% endfor %}
+                                <li><a href="{% url 'tags' %}">更多...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- blog side end -->
+{% endblock %}

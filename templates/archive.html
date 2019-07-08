@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}归档{% endblock %}
+{% block content %}
+    <!-- blog side -->
+    <section class="blog-side sp-seven blog-style-one standard-post sec-pad">
+    {% regroup article_list by createtime.year as year_article_group %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-12 col-xs-12 content-side">
+                        <ul>
+                          {% for year in year_article_group %}
+                              <div class="text-center" id="{{ year.grouper }}"><h2>{{ year.grouper }} 年</h2></div>
+                            {% regroup year.list by createtime.month as month_article_group %}
+                            <ul>
+                              {% for month in month_article_group %}
+                                  <div id="{{ month.grouper }}"><li><h3>{{ month.grouper }} 月</h3></li></div>
+                                  <hr style=" height:1px;border:none;border-top:1px dotted grey;" />
+                                <ul>
+                                  {% for article in month.list %}
+                                      <div class="single-post">
+                                        <h4><a href="{% url 'article' article.id %}">{{ article.title }}</a></h4>
+                                          <h6><p>{{ article.desc }}...</p></h6>
+                                        <div class="lower-content" style="">
+                                          {% for tag in article.tags.all %}
+                                           <div class="meta-text" style="margin-left: 1px; margin-top: 2px;"><a href="{% url 'tags' %}?tag={{ tag.id }}">{{ tag.name }}</a></div>
+                                          {% endfor %}
+                                        </div>
+                                      </div>
+                                      <hr style=" height:1px;border:none;border-top:1px dotted grey;" />
+                                  {% endfor %}
+                                </ul>
+                              {% endfor %}
+                            </ul>
+                          {% endfor %}
+                        </ul>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12 sidebar-side">
+                    <div><h2>目录</h2></div>
+                       <ul>
+                       <li>
+                          {% for year in year_article_group %}
+                              <a href="#{{ year.grouper }}" style="font-size: large">{{ year.grouper }} 年</a>
+                                {% regroup year.list by createtime.month as month_article_group %}
+                                <ul>
+                                  {% for month in month_article_group %}
+                                      <li>
+                                      <a href="#{{ month.grouper }}" style="font-size: large">{{ month.grouper }} 月</a>
+                                      </li>
+                                  {% endfor %}
+                                </ul>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                       </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- blog side end -->
+{% endblock %}

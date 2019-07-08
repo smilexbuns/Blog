@@ -1,0 +1,117 @@
+﻿{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}博客详情{% endblock %}
+{% block content %}
+<!-- blog side -->
+    <section class="blog-side sp-seven blog-style-one standard-post sec-pad">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-12 col-xs-12 content-side">
+                    <div class="blog-details-content">
+                        <figure><img src="{{ MEDIA_URL }}{{ article.firstPicture }}" class="center" alt=""></figure>
+                        <div class="blog-content-one sp-three">
+                            <div class="top-content centred">
+                                <div class="meta-text">{{ article.flag }}</div>
+                                <div class="title"><h3>{{ article.title }}</h3></div>
+                                <div class="date"><span>On</span> {{ article.createtime }} &nbsp;&nbsp;<i class="flaticon-circle"></i>&nbsp;&nbsp;<span>By</span> {{ article.user.nickname }}</div>
+                            </div>
+                            <div class="text-style-one">
+                                <p id="post_content">{{ article.content|safe }}
+                                </p>
+                            </div>
+                            <ul class="meta-list centred">
+                                <li><a href="#"><i class="fa fa-comments-o" aria-hidden="true"></i>&nbsp; {{ article.comment_set.count }}</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{ article.views }}</a></li>
+                                <li><a href="post1.html"><i class="flaticon-substract"></i> &nbsp; END &nbsp; <i class="flaticon-substract"></i></a></li>
+                                <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
+                            </ul>
+                        </div>
+                        <div class="single-authore">
+                            <div class="authore-img"><figure><img src="{{ MEDIA_URL }}{{ article.user.avatar }}" style="width: 70px;height: 70px;" alt=""></figure></div>
+                            <div class="authore-title">{{ article.user.nickname }} - <span>作者</span></div>
+                            <div class="text"><p>bun|sunq</p></div>
+                            <ul class="social-link">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="related-post centred">
+                            <div class="title-text-two">相关文章</div>
+                            <div class="carousel-style-four nav-style-none dots-style-one">
+                                {% for related_article in related_articles %}
+                                <div class="carousel-style-one">
+                                    <figure><img src="{{ MEDIA_URL }}{{ related_article.firstPicture }}" style="height: 200px;" alt=""></figure>
+                                    <div class="lower-content">
+                                        <div class="meta-text"><a href="#">{{ related_article.type.name }}</a></div>
+                                        <div class="title"><h6><a href="post2.html">{{ related_article.title }}</a></h6></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="comment-area" id="comment-area">
+                        <div fr></div>
+                            <div class="title-text-two">{{ article.comment_set.count }} 条评论</div>
+                            <!--评论根-->
+                            {% for comment in comments %}
+                            <div class="single-comment">
+                                <div class="img-box"><figure><img src="{{ MEDIA_URL }}{{ comment.user.avatar }}" style="width: 80px;height: 80px;" alt=""></figure></div>
+                                <div class="comment-title">{{ comment.user.nickname }}</div>
+                                <div class="replay"><a href="javascript:reply({{ comment.id }})"><i class="fa fa-reply-all" aria-hidden="true"></i>&nbsp;回复</a></div>
+                                <div class="comment-time">{{ comment.createtime }}</div>
+                                <div class="text">
+                                    <p>{{ comment.content }}</p>
+                                </div>
+                            </div>
+                                <!--评论子-->
+                                {% for reply in comment.root_comment.all %}
+                                <div class="single-comment replay">
+                                    <div class="img-box"><figure><img src="{{ MEDIA_URL }}{{ reply.user.avatar }}" style="width: 80px;height: 80px;" alt=""></figure></div>
+                                    <div class="comment-title">{{ reply.user.nickname }}</div>
+                                    <div class="replay"><a href="javascript:reply({{ reply.id }})"><i class="fa fa-reply-all" aria-hidden="true"></i>&nbsp;回复</a></div>
+                                    <div class="comment-time">{{ reply.createtime }}</div>
+                                    <div class="text">
+                                        <p>{{ reply.content }}</p>
+                                     </div>
+                                 </div>
+                                 {% endfor %}
+                            {% endfor %}
+                        </div>
+                        <div class="comment-form" id="comment-form">
+                            <input type="hidden" value="0" name="reply_comment_id" id="reply_comment_id">
+                            <div class="title-text-two">填写评论</div>
+                            <form action="{% url 'post_comment' article.id %}" method="post">
+                                <div class="row">
+                                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                        <textarea placeholder="请在这里输入您的评论..." id="content" name="content" required=""></textarea>
+                                    </div>
+                                    <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                        <input type="text" id="nickname" name="nickname" value="" placeholder="姓名" required="">
+                                    </div>
+                                    <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                        <input type="email" id="email" name="email" value="" placeholder="邮箱" required="">
+                                    </div>
+                                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                        <button type="button" id="commentpost_btn" class="btn-one">发表评论</button>
+                                    </div>
+                                </div>
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12 sidebar-side">
+                <div class="sidebar-categories">
+                    <div class="sidebar-title">目录</div>
+                       <ul class="categories-list">
+                                {{ toc|safe }}
+                       </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<!-- blog side end -->
+{% endblock %}
